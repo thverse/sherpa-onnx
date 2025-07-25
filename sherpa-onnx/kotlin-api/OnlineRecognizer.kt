@@ -34,6 +34,7 @@ data class OnlineNeMoCtcModelConfig(
 )
 
 data class OnlineModelConfig(
+    var name: String = "",
     var transducer: OnlineTransducerModelConfig = OnlineTransducerModelConfig(),
     var paraformer: OnlineParaformerModelConfig = OnlineParaformerModelConfig(),
     var zipformer2Ctc: OnlineZipformer2CtcModelConfig = OnlineZipformer2CtcModelConfig(),
@@ -188,288 +189,32 @@ by following the code)
     encoder int8, decoder/joiner float32
 
  */
-fun getModelConfig(type: Int): OnlineModelConfig? {
-    when (type) {
-        0 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-99-avg-1.onnx",
-                    decoder = "$modelDir/decoder-epoch-99-avg-1.onnx",
-                    joiner = "$modelDir/joiner-epoch-99-avg-1.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-            )
-        }
+fun getModelConfig(modelName: String): OnlineModelConfig? {
+    val modelConfigs = listOf(
+        OnlineModelConfig(
+            name = "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20",
+            transducer = OnlineTransducerModelConfig(
+                encoder = "$modelName/encoder-epoch-99-avg-1.onnx",
+                decoder = "$modelName/decoder-epoch-99-avg-1.onnx",
+                joiner = "$modelName/joiner-epoch-99-avg-1.onnx",
+            ),
+            tokens = "$modelName/tokens.txt",
+            modelType = "zipformer",
+        ),
 
-        1 -> {
-            val modelDir = "sherpa-onnx-lstm-zh-2023-02-20"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-11-avg-1.onnx",
-                    decoder = "$modelDir/decoder-epoch-11-avg-1.onnx",
-                    joiner = "$modelDir/joiner-epoch-11-avg-1.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "lstm",
-            )
-        }
+        OnlineModelConfig(
+            name = "sherpa-onnx-streaming-zipformer-korean-2024-06-16",
+            transducer = OnlineTransducerModelConfig(
+                encoder = "$modelName/encoder-epoch-99-avg-1.int8.onnx",
+            decoder = "$modelName/decoder-epoch-99-avg-1.onnx",
+                joiner = "$modelName/joiner-epoch-99-avg-1.int8.onnx",
+            ),
+            tokens = "$modelName/tokens.txt",
+            modelType = "zipformer",
+        )
+    )
 
-        2 -> {
-            val modelDir = "sherpa-onnx-lstm-en-2023-02-17"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-99-avg-1.onnx",
-                    decoder = "$modelDir/decoder-epoch-99-avg-1.onnx",
-                    joiner = "$modelDir/joiner-epoch-99-avg-1.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "lstm",
-            )
-        }
-
-        3 -> {
-            val modelDir = "icefall-asr-zipformer-streaming-wenetspeech-20230615"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/exp/encoder-epoch-12-avg-4-chunk-16-left-128.int8.onnx",
-                    decoder = "$modelDir/exp/decoder-epoch-12-avg-4-chunk-16-left-128.onnx",
-                    joiner = "$modelDir/exp/joiner-epoch-12-avg-4-chunk-16-left-128.onnx",
-                ),
-                tokens = "$modelDir/data/lang_char/tokens.txt",
-                modelType = "zipformer2",
-            )
-        }
-
-        4 -> {
-            val modelDir = "icefall-asr-zipformer-streaming-wenetspeech-20230615"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/exp/encoder-epoch-12-avg-4-chunk-16-left-128.onnx",
-                    decoder = "$modelDir/exp/decoder-epoch-12-avg-4-chunk-16-left-128.onnx",
-                    joiner = "$modelDir/exp/joiner-epoch-12-avg-4-chunk-16-left-128.onnx",
-                ),
-                tokens = "$modelDir/data/lang_char/tokens.txt",
-                modelType = "zipformer2",
-            )
-        }
-
-        5 -> {
-            val modelDir = "sherpa-onnx-streaming-paraformer-bilingual-zh-en"
-            return OnlineModelConfig(
-                paraformer = OnlineParaformerModelConfig(
-                    encoder = "$modelDir/encoder.int8.onnx",
-                    decoder = "$modelDir/decoder.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "paraformer",
-            )
-        }
-
-        6 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-en-2023-06-26"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx",
-                    decoder = "$modelDir/decoder-epoch-99-avg-1-chunk-16-left-128.onnx",
-                    joiner = "$modelDir/joiner-epoch-99-avg-1-chunk-16-left-128.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer2",
-            )
-        }
-
-        7 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-fr-2023-04-14"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-29-avg-9-with-averaged-model.int8.onnx",
-                    decoder = "$modelDir/decoder-epoch-29-avg-9-with-averaged-model.onnx",
-                    joiner = "$modelDir/joiner-epoch-29-avg-9-with-averaged-model.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-            )
-        }
-
-        8 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-99-avg-1.int8.onnx",
-                    decoder = "$modelDir/decoder-epoch-99-avg-1.onnx",
-                    joiner = "$modelDir/joiner-epoch-99-avg-1.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-            )
-        }
-
-        9 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-zh-14M-2023-02-23"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-99-avg-1.int8.onnx",
-                    decoder = "$modelDir/decoder-epoch-99-avg-1.onnx",
-                    joiner = "$modelDir/joiner-epoch-99-avg-1.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-            )
-        }
-
-        10 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-en-20M-2023-02-17"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-99-avg-1.int8.onnx",
-                    decoder = "$modelDir/decoder-epoch-99-avg-1.onnx",
-                    joiner = "$modelDir/joiner-epoch-99-avg-1.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-            )
-        }
-
-        11 -> {
-            val modelDir = "sherpa-onnx-nemo-streaming-fast-conformer-ctc-en-80ms"
-            return OnlineModelConfig(
-                neMoCtc = OnlineNeMoCtcModelConfig(
-                    model = "$modelDir/model.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-            )
-        }
-
-        12 -> {
-            val modelDir = "sherpa-onnx-nemo-streaming-fast-conformer-ctc-en-480ms"
-            return OnlineModelConfig(
-                neMoCtc = OnlineNeMoCtcModelConfig(
-                    model = "$modelDir/model.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-            )
-        }
-
-        13 -> {
-            val modelDir = "sherpa-onnx-nemo-streaming-fast-conformer-ctc-en-1040ms"
-            return OnlineModelConfig(
-                neMoCtc = OnlineNeMoCtcModelConfig(
-                    model = "$modelDir/model.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-            )
-        }
-
-        14 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-korean-2024-06-16"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder-epoch-99-avg-1.int8.onnx",
-                    decoder = "$modelDir/decoder-epoch-99-avg-1.onnx",
-                    joiner = "$modelDir/joiner-epoch-99-avg-1.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-            )
-        }
-
-        15 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-small-ctc-zh-int8-2025-04-01"
-            return OnlineModelConfig(
-                zipformer2Ctc = OnlineZipformer2CtcModelConfig(
-                    model = "$modelDir/model.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-            )
-        }
-
-        16 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-small-ctc-zh-2025-04-01"
-            return OnlineModelConfig(
-                zipformer2Ctc = OnlineZipformer2CtcModelConfig(
-                    model = "$modelDir/model.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-            )
-        }
-
-        17 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-ctc-zh-int8-2025-06-30"
-            return OnlineModelConfig(
-                zipformer2Ctc = OnlineZipformer2CtcModelConfig(
-                    model = "$modelDir/model.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-            )
-        }
-
-        18 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-ctc-zh-2025-06-30"
-            return OnlineModelConfig(
-                zipformer2Ctc = OnlineZipformer2CtcModelConfig(
-                    model = "$modelDir/model.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer2",
-            )
-        }
-
-        19 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-ctc-zh-fp16-2025-06-30"
-            return OnlineModelConfig(
-                zipformer2Ctc = OnlineZipformer2CtcModelConfig(
-                    model = "$modelDir/model.fp16.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer2",
-            )
-        }
-
-        20 -> {
-            val modelDir = "sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder.int8.onnx",
-                    decoder = "$modelDir/decoder.onnx",
-                    joiner = "$modelDir/joiner.int8.onnx",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer2",
-            )
-        }
-
-        1000 -> {
-            val modelDir = "sherpa-onnx-rk3588-streaming-zipformer-bilingual-zh-en-2023-02-20"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder.rknn",
-                    decoder = "$modelDir/decoder.rknn",
-                    joiner = "$modelDir/joiner.rknn",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-                provider = "rknn",
-            )
-        }
-
-        1001 -> {
-            val modelDir = "sherpa-onnx-rk3588-streaming-zipformer-small-bilingual-zh-en-2023-02-16"
-            return OnlineModelConfig(
-                transducer = OnlineTransducerModelConfig(
-                    encoder = "$modelDir/encoder.rknn",
-                    decoder = "$modelDir/decoder.rknn",
-                    joiner = "$modelDir/joiner.rknn",
-                ),
-                tokens = "$modelDir/tokens.txt",
-                modelType = "zipformer",
-                provider = "rknn",
-            )
-        }
-
-    }
-    return null
+    return modelConfigs.find { it.name == modelName }
 }
 
 /*

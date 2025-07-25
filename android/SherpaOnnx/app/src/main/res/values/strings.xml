@@ -7,5 +7,7 @@
         Please see https://github.com/k2-fsa/sherpa-onnx for details.
     </string>
     <string name="start">Start</string>
+    <string name="accept">Accept</string>
+    <string name="clear">Clear</string>
     <string name="stop">Stop</string>
 </resources>

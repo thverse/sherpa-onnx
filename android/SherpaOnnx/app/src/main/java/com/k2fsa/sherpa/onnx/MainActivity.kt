@@ -8,6 +8,7 @@ import android.media.MediaRecorder
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.concurrent.thread
+
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.AdapterView
+
 
 private const val TAG = "sherpa-onnx"
 private const val REQUEST_RECORD_AUDIO_PERMISSION = 200
@@ -43,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private val audioFormat = AudioFormat.ENCODING_PCM_16BIT
     private var idx: Int = 0
     private var lastText: String = ""
+    private var selectedModel: String = ""
 
     @Volatile
     private var isRecording: Boolean = false
@@ -71,8 +78,10 @@ class MainActivity : AppCompatActivity() {
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
 
+        initSpinner()
+
         Log.i(TAG, "Start to initialize model")
-        initModel()
+        // initModel()
         Log.i(TAG, "Finished initializing model")
 
         recordButton = findViewById(R.id.record_button)
@@ -194,11 +203,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun initModel() {
+    private fun initModel(modelName: String) {
         // Please change getModelConfig() to add new models
         // See https://k2-fsa.github.io/sherpa/onnx/pretrained_models/index.html
         // for a list of available models
-        val type = 0
+//        val type = 14
+//        val type = 0
+
         var ruleFsts : String?
         ruleFsts = null
 
@@ -216,10 +227,10 @@ class MainActivity : AppCompatActivity() {
             ruleFsts = "replace.fst",
         )
 
-        Log.i(TAG, "Select model type $type")
+        Log.i(TAG, "Selected model $modelName")
         var config = OnlineRecognizerConfig(
             featConfig = getFeatureConfig(sampleRate = sampleRateInHz, featureDim = 80),
-            modelConfig = getModelConfig(type = type)!!,
+            modelConfig = getModelConfig(modelName)!!,
             // lmConfig = getOnlineLMConfig(type = type),
             endpointConfig = getEndpointConfig(),
             enableEndpoint = true,
@@ -243,6 +254,51 @@ class MainActivity : AppCompatActivity() {
             config = config,
         )
     }
+
+    private fun initSpinner(){
+        // (1) assets 디렉토리에서 .onnx 파일 목록 가져오기
+        val assetFileList = assets.list("")?.filter { it.contains("onnx") }?.toList() ?: listOf()
+
+        // (2) Spinner(드롭다운) 객체 가져오기
+        val spinner = findViewById<Spinner>(R.id.model_spinner)
+
+        // (3) Spinner에 모델 리스트 바인딩
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, assetFileList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        spinner.setSelection(0)
+
+      // Spinner 선택 값 저장
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedModel = assetFileList[position]
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                selectedModel = assetFileList.firstOrNull() ?: ""
+            }
+        }
+
+        // Select 버튼 클릭 시 initModel 호출
+        val acceptButton = findViewById<Button>(R.id.accept_button)
+        acceptButton.setOnClickListener {
+            initModel(selectedModel)
+        }
+
+        val clearButton = findViewById<Button>(R.id.clear_button)
+        clearButton.setOnClickListener {
+            onClear()
+        }
+
+    }
+
+    private fun onClear(){
+        textView.text = ""
+        lastText = ""
+        idx = 0
+    }
+
+
     private fun copyDataDir(dataDir: String): String {
         Log.i(TAG, "data dir is $dataDir")
         copyAssets(dataDir)
@@ -271,6 +327,8 @@ class MainActivity : AppCompatActivity() {
             Log.e(TAG, "Failed to copy $path. $ex")
         }
     }
+
+
 
     private fun copyFile(filename: String) {
         try {
