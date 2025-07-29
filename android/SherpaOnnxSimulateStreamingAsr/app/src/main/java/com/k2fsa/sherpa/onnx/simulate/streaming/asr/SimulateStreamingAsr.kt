@@ -61,10 +61,6 @@ object SimulateStreamingAsr {
                 modelConfig = getOfflineModelConfig(type = asrModelType)!!,
             )
 
-            if (config.modelConfig.numThreads == 1) {
-                config.modelConfig.numThreads = 2
-            }
-            
             // Try to use NNAPI, fallback to CPU if not available
             try {
                 config.modelConfig.provider = "nnapi"
@@ -91,6 +87,7 @@ object SimulateStreamingAsr {
                 assetManager = assetManager,
                 config = config,
             )
+            Log.i(TAG, "The number of threads currently in use: ${config.modelConfig.numThreads}")
 
             Log.i(TAG, "sherpa-onnx offline recognizer initialized")
         }

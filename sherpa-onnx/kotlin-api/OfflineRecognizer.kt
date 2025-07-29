@@ -79,7 +79,7 @@ data class OfflineModelConfig(
     var zipformerCtc: OfflineZipformerCtcModelConfig = OfflineZipformerCtcModelConfig(),
     var canary: OfflineCanaryModelConfig = OfflineCanaryModelConfig(),
     var teleSpeech: String = "",
-    var numThreads: Int = 1,
+    var numThreads: Int = 7,
     var debug: Boolean = false,
     var provider: String = "cpu",
     var modelType: String = "",

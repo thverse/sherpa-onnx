@@ -104,7 +104,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 ),
                 title = {
                     Text(
-                        "Next-gen Kaldi: Simulate real-time speech recognition",
+                        "Testing App using Whisper-turbo",
                         fontWeight = FontWeight.Bold,
                     )
                 },
