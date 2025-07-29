@@ -206,7 +206,18 @@ fun getModelConfig(modelName: String): OnlineModelConfig? {
             name = "sherpa-onnx-streaming-zipformer-korean-2024-06-16",
             transducer = OnlineTransducerModelConfig(
                 encoder = "$modelName/encoder-epoch-99-avg-1.int8.onnx",
-            decoder = "$modelName/decoder-epoch-99-avg-1.onnx",
+                decoder = "$modelName/decoder-epoch-99-avg-1.onnx",
+                joiner = "$modelName/joiner-epoch-99-avg-1.int8.onnx",
+            ),
+            tokens = "$modelName/tokens.txt",
+            modelType = "zipformer",
+        ),
+
+        OnlineModelConfig(
+            name = "sherpa-onnx-zipformer-korean-2024-06-24",
+            transducer = OnlineTransducerModelConfig(
+                encoder = "$modelName/encoder-epoch-99-avg-1.int8.onnx",
+                decoder = "$modelName/decoder-epoch-99-avg-1.onnx",
                 joiner = "$modelName/joiner-epoch-99-avg-1.int8.onnx",
             ),
             tokens = "$modelName/tokens.txt",

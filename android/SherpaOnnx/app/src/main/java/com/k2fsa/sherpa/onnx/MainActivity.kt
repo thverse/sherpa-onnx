@@ -18,6 +18,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.concurrent.thread
 
+
+
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.AdapterView
@@ -254,6 +256,7 @@ class MainActivity : AppCompatActivity() {
             config = config,
         )
     }
+
 
     private fun initSpinner(){
         // (1) assets 디렉토리에서 .onnx 파일 목록 가져오기

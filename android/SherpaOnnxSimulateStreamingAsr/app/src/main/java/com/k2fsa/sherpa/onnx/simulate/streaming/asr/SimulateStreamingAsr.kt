@@ -14,6 +14,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 object SimulateStreamingAsr {
+    private const val TAG = "SimulateStreamingAsr"
     private var _recognizer: OfflineRecognizer? = null
     val recognizer: OfflineRecognizer
         get() {
@@ -35,7 +36,9 @@ object SimulateStreamingAsr {
             // Please change getOfflineModelConfig() to add new models
             // See https://k2-fsa.github.io/sherpa/onnx/pretrained_models/index.html
             // for a list of available models
-            val asrModelType = 15
+            val asrModelType = 40
+//            val asrModelType = 40
+
             val asrRuleFsts: String?
             asrRuleFsts = null
             Log.i(TAG, "Select model type $asrModelType for ASR")
@@ -60,6 +63,15 @@ object SimulateStreamingAsr {
 
             if (config.modelConfig.numThreads == 1) {
                 config.modelConfig.numThreads = 2
+            }
+            
+            // Try to use NNAPI, fallback to CPU if not available
+            try {
+                config.modelConfig.provider = "nnapi"
+                Log.i(TAG, "Using NNAPI provider for hardware acceleration")
+            } catch (e: Exception) {
+                config.modelConfig.provider = "cpu"
+                Log.w(TAG, "NNAPI not available, falling back to CPU provider")
             }
 
             if (asrRuleFsts != null) {
@@ -88,7 +100,7 @@ object SimulateStreamingAsr {
         if (_vad != null) {
             return
         }
-        val type = 0
+        val type = 1
         Log.i(TAG, "Select VAD model type $type")
         val config = getVadModelConfig(type)
 

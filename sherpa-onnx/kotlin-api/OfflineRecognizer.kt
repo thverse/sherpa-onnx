@@ -677,6 +677,40 @@ fun getOfflineModelConfig(type: Int): OfflineModelConfig? {
                 tokens = "$modelDir/tokens.txt",
             )
         }
+        40 -> {
+            val modelDir = "sherpa-onnx-whisper-turbo"
+            return OfflineModelConfig(
+                whisper = OfflineWhisperModelConfig(
+                    encoder = "$modelDir/turbo-encoder.int8.onnx",
+                    decoder = "$modelDir/turbo-decoder.int8.onnx",
+                ),
+                tokens = "$modelDir/turbo-tokens.txt",
+                modelType = "whisper",
+            )
+        }
+        41 -> {
+            val modelDir = "sherpa-onnx-medium"
+            return OfflineModelConfig(
+                whisper = OfflineWhisperModelConfig(
+                    encoder = "$modelDir/medium-encoder.int8.onnx",
+                    decoder = "$modelDir/medium-decoder.int8.onnx",
+                ),
+                tokens = "$modelDir/medium-tokens.txt",
+                modelType = "whisper",
+            )
+        }
+//        40 -> {
+//            val modelDir = "sherpa-onnx-streaming-zipformer-korean-2024-06-16"
+//            return OfflineModelConfig(
+//                transducer = OfflineTransducerModelConfig(
+//                    encoder = "$modelDir/encoder-epoch-99-avg-1.int8.onnx",
+//                    decoder = "$modelDir/decoder-epoch-99-avg-1.onnx",
+//                    joiner = "$modelDir/joiner-epoch-99-avg-1.int8.onnx",
+//                ),
+//                tokens = "$modelDir/tokens.txt",
+//                modelType = "zipformer",
+//            )
+//        }
     }
     return null
 }
